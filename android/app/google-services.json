@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511263269898",
+    "project_id": "flutter-djila",
+    "storage_bucket": "flutter-djila.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511263269898:android:5b41ecb73d49e90af66bf3",
+        "android_client_info": {
+          "package_name": "com.djila.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPQ_4F61nJ6SryfhC5cPopH_65VvuUVGc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
