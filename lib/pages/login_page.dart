@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:djila/controllers/auth_service.dart';
-import 'package:djila/pages/home_page.dart';
+import 'package:djila/main.dart';
+import 'package:djila/main.dart';
 import 'package:telephony/telephony.dart';
 
 class LoginPage extends StatefulWidget {
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage>
         if (value == "Success") {
           Navigator.pop(context);
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
         } else {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -81,129 +82,173 @@ class _LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: Image.asset(
-                "images/login.png",
+      resizeToAvoidBottomInset: true,
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("images/wallpaper.png"),
                 fit: BoxFit.cover,
-              )),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Welcome Back 👋",
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
-                    ),
-                    Text("Enter you phone number to continue."),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        controller: _phoneContoller,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                            prefixText: "+33 ",
-                            labelText: "Enter you phone number",
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32))),
-                        validator: (value) {
-                          if (value!.length != 10)
-                            return "Invalid phone number";
-                          return null;
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      height: 50,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            AuthService.sentOtp(
-                                phone: _phoneContoller.text,
-                                errorStep: () => ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text(
-                                        "Error in sending OTP",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      backgroundColor: Colors.red,
-                                    )),
-                                nextStep: () {
-                                  // start lisenting for otp
-                                  listenToIncomingSMS(context);
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            title: Text("OTP Verification"),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Enter 6 digit OTP"),
-                                                SizedBox(
-                                                  height: 12,
-                                                ),
-                                                Form(
-                                                  key: _formKey1,
-                                                  child: TextFormField(
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    controller: _otpContoller,
-                                                    decoration: InputDecoration(
-                                                        labelText:
-                                                            "Enter you phone number",
-                                                        border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        32))),
-                                                    validator: (value) {
-                                                      if (value!.length != 6)
-                                                        return "Invalid OTP";
-                                                      return null;
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () =>
-                                                      handleSubmit(context),
-                                                  child: Text("Submit"))
-                                            ],
-                                          ));
-                                });
-                          }
-                        },
-                        child: Text("Send OTP"),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.yellow,
-                            foregroundColor: Colors.black),
-                      ),
-                    )
-                  ],
-                ),
               ),
-            ],
+            ),
           ),
+ Positioned(
+            top: 20,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                  Image.asset(
+                    'images/logohome.png',
+                    width: 200,
+                    height: 200,
+                  ),
+              ],
+            ),
+          ),
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    SizedBox(
+                      height:
+                          200),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                    child: const Text('Revenir au menu'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                    )
+                  ),
+                  SizedBox(
+                      height:
+                          30),
+                  Text(
+                    "Connexion",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+
+                  Text("Enter your phone number to continue."),
+                  SizedBox(height: 10),
+                  Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      style: TextStyle(color: Colors.white, fontSize: 24,),
+                      controller: _phoneContoller,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        prefixText: "+33 ",
+                          prefixStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
+                        labelText: "Entrer votre numéro de mobile",
+                        labelStyle: TextStyle(
+                          color: Colors.white,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.length != 10) return "Numéro de mobile invalide";
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          AuthService.sentOtp(
+                              phone: _phoneContoller.text,
+                              errorStep: () => ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      "Error in sending OTP",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  )),
+                              nextStep: () {
+                                // start lisenting for otp
+                                listenToIncomingSMS(context);
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text("Verification Code de sécurité"),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Entrer les 6 chiffres"),
+                                              SizedBox(
+                                                height: 12,
+                                              ),
+                                              Form(
+                                                key: _formKey1,
+                                                child: TextFormField(
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  controller: _otpContoller,
+                                                  decoration: InputDecoration(
+                                                      labelText:
+                                                          "Entrer votre numéro de mobile",
+                                                      border: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      32))),
+                                                  validator: (value) {
+                                                    if (value!.length != 6)
+                                                      return "Le code de verification est invalide";
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () =>
+                                                    handleSubmit(context),
+                                                child: Text("Submit"))
+                                          ],
+                                        ));
+                              });
+                        }
+                      },
+                      child: Text("Envoyez un code de verification"),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+          ],
         ),
-      ),
-    );
+      );
   }
 }
