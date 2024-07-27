@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:djila/controllers/auth_service.dart';
-import 'package:djila/pages/home_page.dart';
 import 'package:djila/pages/login_page.dart';
 import 'package:djila/PrivacyPolicy.dart';
 import 'package:djila/RightsReservedPage.dart';
@@ -12,124 +11,230 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print('Initializing Firebase...');
   try {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  } catch(e)
-  {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
     print('Error initializing Firebase: $e');
   }
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-        home: new HomeScreen());
-  }
-}
-
-
-  // This widget is the root of your application.
-class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Djila',
-      home: Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'images/wallpaper.png',
-              fit: BoxFit.cover,
-            ),
-            Column(
-              children: [
-                AppBar(
-                  toolbarHeight: 100,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  title: Image.asset(
-                    'images/logohome.png',
-                    fit: BoxFit.contain,
-                    width: 100,
-                    height: 100,
-                  ),
-                  actions: [
-                    IconButton(
-                      icon:
-                          const Icon(Icons.account_circle, color: Colors.white),
-                      tooltip: "Se connecter / S'inscrire",
-                      onPressed: () {
-                       Navigator.push(
-            context,
-            new MaterialPageRoute(builder: (context) => LoginPage()),
-          );
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.menu, color: Colors.white),
-                      tooltip: 'Menu',
-                      onPressed: () {
-                      },
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 300,
-                          height: 500,
-                          margin: const EdgeInsets.all(
-                              20), // Added margin for better positioning
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black54,
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: buildCategoryContent(context),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          // child: buildFooterText(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
     );
   }
 }
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    bool isLoggedIn = await AuthService.isLoggedIn();
+    setState(() {
+      _isLoggedIn = isLoggedIn;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'images/wallpaper.png',
+            fit: BoxFit.cover,
+          ),
+          Column(
+            children: [
+              AppBar(
+                toolbarHeight: 100,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Image.asset(
+                  'images/logohome.png',
+                  fit: BoxFit.contain,
+                  width: 100,
+                  height: 100,
+                ),
+                actions: [
+                  _isLoggedIn
+                      ? OutlinedButton(
+                          onPressed: () {
+                            AuthService.logout();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Deconnexion",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      : IconButton(
+                          icon: const Icon(
+                            Icons.account_circle,
+                            color: Colors.white,
+                          ),
+                          tooltip: "Se connecter / S'inscrire",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(),
+                              ),
+                            );
+                          },
+                        ),
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.menu, color: Colors.white),
+                    onSelected: (String result) {
+                      setState(() {
+                        switch (result) {
+                          case 'Mes Annonces':
+                            break;
+                          case 'Paiements':
+                            break;
+                          case 'Contact':
+                            break;
+                          case 'Deconnexion':
+                            break;
+                        }
+                      });
+                    },
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                      PopupMenuItem<String>(
+                        value: "Mes Annonces",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(Icons.shopping_cart_rounded),
+                            ),
+                            const Text(
+                              'Mes Annonces',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: "Paiements",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(Icons.add_card),
+                            ),
+                            const Text(
+                              'Paiements',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                          PopupMenuItem<String>(
+                        value: "Contact",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(Icons.comment),
+                            ),
+                            const Text(
+                              'Contact',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                        PopupMenuItem<String>(
+                        value: "Deconnexion",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(Icons.account_circle),
+                            ),
+                            const Text(
+                              'Deconnexion',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 300,
+                        height: 500,
+                        margin: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black,
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: buildCategoryContent(context),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: buildFooterText(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
  Widget buildCategoryContent(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        buildCategoryRow(context, 'images/categories/food.png', 'FoodNight',
+        buildCategoryRow(context, 'images/categories/food.png', 'Food Night',
             '(dessert, burgers...)'),
         const SizedBox(height: 20),
-        buildCategoryRow(context, 'images/categories/grocery.png', 'Grocery',
+        buildCategoryRow(context, 'images/categories/grocery.png', 'Epicerie',
             '(boissons, snacks...)'),
         const SizedBox(height: 20),
-        buildCategoryRow(context, 'images/categories/luxury.png', 'Luxury',
+        buildCategoryRow(context, 'images/categories/luxury.png', 'Luxe',
             '(sappes, cosmetiques...)'),
         const SizedBox(height: 20),
-        buildCategoryRow(context, 'images/categories/natural.png', 'Natural',
+        buildCategoryRow(context, 'images/categories/natural.png', 'Naturel',
             '(miel, huile de Nigelle...)'),
         const SizedBox(height: 20),
         buildCategoryRow(context, 'images/categories/highTech.png', 'High Tech',
@@ -137,13 +242,13 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
-
+}
   Widget buildFooterText(BuildContext context) {
     return Builder(// Adding Builder here to get the correct context
         builder: (BuildContext context) {
       return RichText(
         text: TextSpan(
-          style: const TextStyle(fontSize: 14, color: Colors.white),
+          style: const TextStyle(fontSize: 12, color: Colors.white),
           children: [
             TextSpan(
               text: 'Tous droits réservés © 2024 - ',
@@ -157,7 +262,7 @@ class HomeScreen extends StatelessWidget {
                 // },
             ),
             TextSpan(
-              text: 'Confidentialité -r',
+              text: 'Confidentialité - ',
               style: const TextStyle(decoration: TextDecoration.underline),
               // recognizer: TapGestureRecognizer()
                 // ..onTap = () {
