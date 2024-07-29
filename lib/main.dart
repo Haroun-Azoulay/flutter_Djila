@@ -2,10 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:djila/controllers/auth_service.dart';
 import 'package:djila/pages/login_page.dart';
+import 'package:djila/pages/add_product.dart';
 import 'package:djila/PrivacyPolicy.dart';
 import 'package:djila/RightsReservedPage.dart';
 import 'package:djila/VersionPage.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +39,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoggedIn = false;
+  User? _user;
 
   @override
   void initState() {
@@ -46,8 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _checkLoginStatus() async {
     bool isLoggedIn = await AuthService.isLoggedIn();
+    User? user = FirebaseAuth.instance.currentUser;
     setState(() {
       _isLoggedIn = isLoggedIn;
+      _user = user;
     });
   }
 
@@ -186,35 +191,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 300,
-                        height: 500,
-                        margin: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black,
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: buildCategoryContent(context),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: buildFooterText(context),
-                      ),
-                    ],
-                  ),
-                ),
+Expanded(
+  child: SingleChildScrollView(
+    child: Column(
+      children: [
+        Container(
+          width: 300,
+          height: 500,
+          margin: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black,
+                blurRadius: 8,
+                offset: Offset(0, 4),
               ),
+            ],
+          ),
+          child: Column(
+            children: [
+              _isLoggedIn
+                  ? OutlinedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                             builder: (context) => AddProductPage(user: _user!),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.add_circle,
+                      color: Colors.black),
+                    )
+                  : SizedBox.shrink(),
+              Expanded(
+                child: buildCategoryContent(context),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: buildFooterText(context),
+        ),
+      ],
+    ),
+  ),
+),
+
             ],
           ),
         ],
@@ -252,7 +278,6 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             TextSpan(
               text: 'Tous droits réservés © 2024 - ',
-              style: const TextStyle(decoration: TextDecoration.underline),
               // recognizer: TapGestureRecognizer()
                 // ..onTap = () {
                 //   Navigator.push(
@@ -263,7 +288,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             TextSpan(
               text: 'Confidentialité - ',
-              style: const TextStyle(decoration: TextDecoration.underline),
               // recognizer: TapGestureRecognizer()
                 // ..onTap = () {
                 //   Navigator.push(
@@ -274,7 +298,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             TextSpan(
               text: 'Version 0.00',
-              style: const TextStyle(decoration: TextDecoration.underline),
               // recognizer: TapGestureRecognizer()
                 // ..onTap = () {
                 //   Navigator.push(context,

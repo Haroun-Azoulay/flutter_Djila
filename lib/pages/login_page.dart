@@ -231,7 +231,7 @@ class _LoginPageState extends State<LoginPage>
                                             TextButton(
                                                 onPressed: () =>
                                                     handleSubmit(context),
-                                                child: Text("Submit"))
+                                                child: Text("Envoyer"))
                                           ],
                                         ));
                               });
