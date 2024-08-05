@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:djila/controllers/auth_service.dart';
 import 'package:djila/pages/login_page.dart';
 import 'package:djila/pages/add_product.dart';
+import 'package:djila/pages/get_all_products.dart';
 import 'package:djila/PrivacyPolicy.dart';
 import 'package:djila/RightsReservedPage.dart';
 import 'package:djila/VersionPage.dart';
@@ -157,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                          PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: "Contact",
                         child: Row(
                           children: [
@@ -172,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                        PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: "Deconnexion",
                         child: Row(
                           children: [
@@ -191,130 +192,110 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-Expanded(
-  child: SingleChildScrollView(
-    child: Column(
-      children: [
-        Container(
-          width: 300,
-          height: 500,
-          margin: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black,
-                blurRadius: 8,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _isLoggedIn
-                  ? OutlinedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                             builder: (context) => AddProductPage(user: _user!),
-                          ),
-                        );
-                      },
-                      child: Icon(Icons.add_circle,
-                      color: Colors.black),
-                    )
-                  : SizedBox.shrink(),
               Expanded(
-                child: buildCategoryContent(context),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 300,
+                        height: 500,
+                        margin: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black,
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            _isLoggedIn
+                                ? OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => AddProductPage(user: _user!),
+                                        ),
+                                      );
+                                    },
+                                    child: Icon(Icons.add_circle, color: Colors.black),
+                                  )
+                                : SizedBox.shrink(),
+                            Expanded(
+                              child: buildCategoryContent(context),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: buildFooterText(context),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: buildFooterText(context),
-        ),
-      ],
-    ),
-  ),
-),
-
             ],
           ),
         ],
       ),
     );
   }
- Widget buildCategoryContent(BuildContext context) {
+
+  Widget buildCategoryContent(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        buildCategoryRow(context, 'images/categories/food.png', 'Food Night',
-            '(dessert, burgers...)'),
+        buildCategoryRow(context, 'images/categories/food.png', 'Food Night', '(dessert, burgers...)'),
         const SizedBox(height: 20),
-        buildCategoryRow(context, 'images/categories/grocery.png', 'Epicerie',
-            '(boissons, snacks...)'),
+        buildCategoryRow(context, 'images/categories/grocery.png', 'Epicerie', '(boissons, snacks...)'),
         const SizedBox(height: 20),
-        buildCategoryRow(context, 'images/categories/luxury.png', 'Luxe',
-            '(sappes, cosmetiques...)'),
+        buildCategoryRow(context, 'images/categories/luxury.png', 'Luxe', '(sappes, cosmetiques...)'),
         const SizedBox(height: 20),
-        buildCategoryRow(context, 'images/categories/natural.png', 'Naturel',
-            '(miel, huile de Nigelle...)'),
+        buildCategoryRow(context, 'images/categories/natural.png', 'Naturel', '(miel, huile de Nigelle...)'),
         const SizedBox(height: 20),
-        buildCategoryRow(context, 'images/categories/highTech.png', 'High Tech',
-            '(téléphonie, chargeurs...)'),
+        buildCategoryRow(context, 'images/categories/highTech.png', 'High Tech', '(téléphonie, chargeurs...)'),
       ],
     );
   }
-}
+
   Widget buildFooterText(BuildContext context) {
-    return Builder(// Adding Builder here to get the correct context
-        builder: (BuildContext context) {
-      return RichText(
-        text: TextSpan(
-          style: const TextStyle(fontSize: 12, color: Colors.white),
-          children: [
-            TextSpan(
-              text: 'Tous droits réservés © 2024 - ',
-              // recognizer: TapGestureRecognizer()
-                // ..onTap = () {
-                //   Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) => RightsReservedPage()));
-                // },
-            ),
-            TextSpan(
-              text: 'Confidentialité - ',
-              // recognizer: TapGestureRecognizer()
-                // ..onTap = () {
-                //   Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) => PrivacyPolicyPage()));
-                // },
-            ),
-            TextSpan(
-              text: 'Version 0.00',
-              // recognizer: TapGestureRecognizer()
-                // ..onTap = () {
-                //   Navigator.push(context,
-                //       MaterialPageRoute(builder: (context) => VersionPage()));
-                // },
-            ),
-          ],
-        ),
-      );
-    });
+    return Builder(
+      builder: (BuildContext context) {
+        return RichText(
+          text: TextSpan(
+            style: const TextStyle(fontSize: 12, color: Colors.white),
+            children: [
+              TextSpan(
+                text: 'Tous droits réservés © 2024 - ',
+              ),
+              TextSpan(
+                text: 'Confidentialité - ',
+              ),
+              TextSpan(
+                text: 'Version 0.00',
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
-  Widget buildCategoryRow(
-      BuildContext context, String imagePath, String title, String subtitle) {
+  Widget buildCategoryRow(BuildContext context, String imagePath, String title, String subtitle) {
     return GestureDetector(
       onTap: () {
-        print("$title category tapped!");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GetAllProductsPage(category: title),
+          ),
+        );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -323,8 +304,7 @@ Expanded(
             width: 70,
             height: 70,
             decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(imagePath), fit: BoxFit.cover),
+              image: DecorationImage(image: AssetImage(imagePath), fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(35),
             ),
           ),
@@ -335,10 +315,7 @@ Expanded(
               children: [
                 Text(
                   title.toUpperCase(),
-                  style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
@@ -353,6 +330,7 @@ Expanded(
       ),
     );
   }
+}
 
 // class CheckUserLoggedInOrNot extends StatefulWidget {
 //   const CheckUserLoggedInOrNot({super.key});

@@ -132,7 +132,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
                         _titleController.text,
                         _descriptionController.text,
                         _selectedCategory,
-                        _imageUrl!,
+                        _imageUrl!, 
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Produit ajouté avec succès')),
