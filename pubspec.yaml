@@ -40,6 +40,7 @@ dependencies:
   telephony: ^0.2.0
   image_picker: ^0.8.2
   cloud_firestore: ^5.1.0
+  firebase_storage: ^12.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,9 @@
+// add_product_page.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:djila/main.dart';
+import 'package:djila/pages/image_selector.dart';
 
 class AddProductPage extends StatelessWidget {
   final User user;
@@ -32,16 +34,17 @@ class _MyCustomFormState extends State<MyCustomForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   String _selectedCategory = list.first;
+  String? _imageUrl;
 
-  Future<void> addData(String title, String description, String category) async {
+  Future<void> addData(String title, String description, String category, String imageUrl) async {
     CollectionReference products = FirebaseFirestore.instance.collection('products');
-    
-  
+
     await products.add({
       'userId': widget.user.uid,
       'title': title,
       'description': description,
       'category': category,
+      'image': imageUrl,
     });
   }
 
@@ -111,19 +114,40 @@ class _MyCustomFormState extends State<MyCustomForm> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
+              child: ImageSelector(
+                onImageUploaded: (String imageUrl) {
+                  setState(() {
+                    _imageUrl = imageUrl;
+                  });
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    addData(_titleController.text, _descriptionController.text, _selectedCategory);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Produit ajouté avec succès')),
-                    );
-                                 Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
+                    if (_imageUrl != null) {
+                      await addData(
+                        _titleController.text,
+                        _descriptionController.text,
+                        _selectedCategory,
+                        _imageUrl!,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Produit ajouté avec succès')),
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Veuillez sélectionner une image')),
+                      );
+                    }
                   }
                 },
                 child: Text('Envoyez'),
