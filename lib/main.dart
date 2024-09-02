@@ -6,6 +6,7 @@ import 'package:djila/pages/add_product.dart';
 import 'package:djila/pages/get_all_products.dart';
 import 'package:djila/PrivacyPolicy.dart';
 import 'package:djila/RightsReservedPage.dart';
+import 'package:djila/annoucements/get_all_annoucements_by_id.dart';
 import 'package:djila/VersionPage.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -111,13 +112,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                         ),
+                         _isLoggedIn ? 
                   PopupMenuButton<String>(
                     icon: const Icon(Icons.menu, color: Colors.white),
                     onSelected: (String result) {
+                      late Widget screen;
                       setState(() {
                         switch (result) {
                           case 'Mes Annonces':
-                            break;
+                            screen = GetAllAnnoucementsById(userId: _user!.uid);
+                          break;
                           case 'Paiements':
                             break;
                           case 'Contact':
@@ -125,8 +129,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           case 'Deconnexion':
                             break;
                         }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => screen,
+                              ),
+                            );
                       });
                     },
+                    
                     itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                       PopupMenuItem<String>(
                         value: "Mes Annonces",
@@ -189,7 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ],
-                  ),
+                  )
+                  :SizedBox.shrink(),
                 ],
               ),
               Expanded(
